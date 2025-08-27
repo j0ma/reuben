@@ -232,7 +232,8 @@ class AggregateAnalysisOutputFormatter(OutputFormatter):
                 )
                 console.print(table)
 
-        if "corr_matrix_model2model" in results:
+        should_use_correlations = False
+        if "corr_matrix_model2model" in results and should_use_correlations:
             table = make_rich_table(
                 data=results,
                 subset="corr_matrix_model2model",
