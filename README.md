@@ -66,7 +66,7 @@ reuben --config-file examples/config.yaml variance-components examples/data.json
 
 #### Comparing models using aggregated scores
 
-Compute aggregated model scores, pairwise diffs, ranks, correlations
+Compute aggregated model scores, pairwise diffs, ranks
 
 ```bash
 reuben compare-models-aggregate [OPTIONS] DATA_PATH
@@ -78,7 +78,6 @@ Outputs:
 - Pairwise diffs per aggregator
 - Effect size tables
 - Rank distributions
-- Model–model correlation matrices
 
 Key options:
 
