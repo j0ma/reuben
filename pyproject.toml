@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "reuben"
+version = "0.1.0-rc1"
+description = "REsampling Uncertainty Bounds for Evaluating NLP"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Jonne Sälevä" }]
+license = { text = "MIT" }
+
+dependencies = [
+  "click>=8.1",
+  "rich>=13.7",
+  "pandas>=2.1",
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.5"]
+
+[project.scripts]
+reuben = "reuben.cli:main_cli"
+
+[tool.hatch.build]
+include = [
+  "examples/**",
+  "reuben/**",
+  "README.md",
+]
+
+exclude = [
+  "examples/**/csv-output"
+]
