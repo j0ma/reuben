@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling>=1.18"]
+requires = ["hatchling>=1.18", "hatch-vcs>=0.3"]
 build-backend = "hatchling.build"
 
 [project]
-name = "reuben"
-version = "0.1.0-rc1"
+name = "reuben-cli"
+dynamic = ["version"]
 description = "REsampling Uncertainty Bounds for Evaluating NLP"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -37,3 +37,6 @@ include = [
 exclude = [
   "examples/**/csv-output"
 ]
+
+[tool.hatch.version]
+source = "vcs"
