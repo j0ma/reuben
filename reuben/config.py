@@ -37,7 +37,7 @@ class Config:
 
     # Analysis options
     standardized: bool = False
-    rounding: int = 3
+    rounding: int = 2
 
     # Output options
     output_format: str = "rich"
@@ -79,7 +79,7 @@ class ConfigModel(BaseModel):
     num_bootstrap_resamples: int = 0
 
     standardized: bool = False
-    rounding: int = 3
+    rounding: int = 2
 
     output_format: Literal["rich", "json", "csv"] = "rich"
     output_path: Optional[Union[str, Path]] = None

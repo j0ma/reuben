@@ -1,7 +1,10 @@
 import json
 from pathlib import Path
+from collections import defaultdict
 
+from rich.console import Console
 import click
+from click.core import ParameterSource
 import yaml
 
 from reuben.resampling import ReplicationResamplingMethod, TaskResamplingMethod
@@ -122,6 +125,47 @@ def sd_col_options(function):
     return decorator(function)
 
 
+def analysis_pipeline_component_args(function):
+    decorator = bundle_decorators(
+        [
+            click.option("--aggregate-analysis", is_flag=True),
+            click.option("--variance-components", is_flag=True),
+            click.option("--pairwise-diffs", is_flag=True),
+            click.option("--pairwise-diffs-task-level-details", is_flag=True),
+        ]
+    )
+    return decorator(function)
+
+
+def existing_leaderboard_pickle_arg(function):
+    decorator = bundle_decorators(
+        [
+            click.option("--leaderboard-pkl", type=click.Path(dir_okay=False)),
+        ]
+    )
+    return decorator(function)
+
+
+def command_with_all_args(function):
+    @data_path_arg
+    @analysis_pipeline_component_args
+    @task_and_repl_resampling_options
+    @score_model_task_options
+    @sd_col_options
+    @idx_col_options
+    @output_path_args
+    @fix_outliers_arg
+    @existing_leaderboard_pickle_arg
+    @click.pass_context
+    def wrapper(ctx, **kwargs):
+        return function(ctx, **kwargs)
+
+    return wrapper
+
+
+# NON OPTIONS
+
+
 def load_config_dict(path: str) -> dict:
     if path.endswith((".yaml", ".yml")):
         return yaml.safe_load(open(path, "r")) or {}
@@ -130,16 +174,34 @@ def load_config_dict(path: str) -> dict:
     raise click.BadParameter(f"Unsupported config file type: {path}")
 
 
-def merge_params_with_config(ctx: click.Context) -> dict:
-    cfg = ctx.obj.get("cfg", {}) or {}
+def merge_params_with_config(ctx):
+    cfg = ctx.obj.get("cfg", {})
+    debug_mode = ctx.obj.get("debug_mode", False)
     merged = {}
+
+    taken_from = defaultdict(list)
+
     for param in ctx.command.params:
         name = param.name
-        source = ctx.get_parameter_source(name)
-        if name in cfg:
+        value = ctx.params.get(name)
+        src = ctx.get_parameter_source(name)
+
+        if src == ParameterSource.COMMANDLINE:
+            merged[name] = value
+            taken_from["command_line"].append(name)
+        elif name in cfg:
             merged[name] = cfg[name]
-        elif source.name == "COMMANDLINE":
-            merged[name] = ctx.params[name]
+            taken_from["config_file"].append(name)
+        elif src == ParameterSource.DEFAULT:
+            merged[name] = value
+            taken_from["default"].append(name)
         else:
-            merged[name] = ctx.params[name]
+            merged[name] = value
+            taken_from["other"].append(name)
+
+    if debug_mode:
+        console = Console(stderr=True)
+        console.print("[yellow]Sources of parameters:[/yellow]")
+        console.print(json.dumps(taken_from, indent=2, ensure_ascii=False))
+
     return merged

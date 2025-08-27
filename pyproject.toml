@@ -35,7 +35,8 @@ include = [
 ]
 
 exclude = [
-  "examples/**/csv-output"
+  "examples/**/csv-output",
+  "examples/**/results/**"
 ]
 
 [tool.hatch.version]

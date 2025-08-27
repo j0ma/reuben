@@ -191,7 +191,11 @@ cython_debug/
 .cursorindexingignore
 
 misc/
+data/
+scripts/
 
 .reuben/
 
+examples/**/*results/
 examples/**/*output/
+examples/experiments-for-paper/**/*.pkl

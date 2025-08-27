@@ -52,7 +52,7 @@ def count_uniq_vals_over_cols(aggregated_repls, row_index=None):
 
     counts.index.name = ""
     counts.columns.name = "rank"
-    if row_index:
+    if row_index is not None:
         counts.index = row_index
 
     return counts
@@ -65,8 +65,13 @@ def rank_rows(arr):
     return out
 
 
-def rank_crosstab(replicated_ranks, row_index=None):
+def rank_crosstab(replicated_ranks, row_index=None, normalize=True, rounding=2):
     histogram = count_uniq_vals_over_cols(replicated_ranks, row_index=row_index)
+    if normalize:
+        histogram = (100 * histogram.div(histogram.sum(axis=1), axis=0)).round(rounding)
+        histogram = histogram.replace(0, "-")
+        histogram = (histogram.astype(str) + "%").replace("-%", "-")
+
     return histogram
 
 
@@ -96,7 +101,15 @@ def df_to_replications(
     da = da.transpose(*dims)
 
     # 4) hand back either .values or a masked‐array
-    return da.to_masked_array() if masked else da.values
+    output = da.to_masked_array() if masked else da.values
+
+    # 5) handle NaNs and convert them to masked values
+    if masked:
+        output = np.ma.masked_invalid(output)
+    else:
+        output = np.nan_to_num(output, nan=1e-10)
+
+    return output
 
 
 def infer_parameters(replications):
@@ -140,7 +153,6 @@ def compute_replication_suff_stats(
     boot_idx_col: str,
     replication_idx_col: Optional[str] = None,
 ) -> pd.DataFrame:
-
     average_perf = data.groupby([model_col, task_col])[score_col].mean()
     out = pd.DataFrame(
         {
@@ -155,6 +167,7 @@ def compute_replication_suff_stats(
         task_col=task_col,
         seed_col=seed_idx_col,
         bootstrap_col=boot_idx_col,
+        masked=True,
     )
     inferred = infer_parameters(replications)
 

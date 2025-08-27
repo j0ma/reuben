@@ -1,0 +1,27 @@
+# General
+fix_outliers: true
+standardized: false
+output_format: rich
+rounding: 2
+
+# Identifiers
+score_col: "bleu_mean"
+model_col: "model"
+task_col: "lang_pair"
+
+# Derive SDs from indices:
+seed_sd_col: "bleu_seed_sd"
+boot_sd_col: "bleu_boot_sd"
+
+# Resampling
+
+## General
+num_bootstrap_resamples: 10000
+
+## Task resampling
+task_resampling_method: "nonparametric"
+task_resampling_with_replacement: true
+task_resampling_num_tasks: 16
+
+## Task resampling
+replication_resampling_method: "parametric"
