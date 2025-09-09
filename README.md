@@ -2,11 +2,15 @@
 
 > REsampling Uncertainty Bounds for Evaluating NLP"
 
-`reuben` is a command line tool (CLI) for measuring the NLP model performance across multiple tasks and quantifying uncertainty in those measurements.
+`reuben` is a command line tool (CLI) for measuring the NLP model performance
+across multiple tasks and quantifying uncertainty in those measurements.
 
-Supports model comparison via pairwise differences and leaderboard-style rankings, using most common aggregation metrics (mean, geometric mean, median).
+Supports model comparison via pairwise differences and leaderboard-style
+rankings, using most common aggregation metrics (mean, geometric mean, median).
 
-Decomposes variance into components attributable to task-to-task heterogeneity, model-side randomness (eg. random seeds), and data-side randomness (eg. test set sampling).
+Decomposes variance into components attributable to task-to-task heterogeneity,
+model-side randomness (eg. random seeds), and data-side randomness (eg. test
+set sampling).
 
 ## Features
 
@@ -42,10 +46,7 @@ pip install -e .
 An example using the XQUAD dataset is provided in `examples/xquad`:
 
 ```
-examples/xquad
-├── config.yaml
-└── data.jsonl
-└── run.sh
+TODO: update
 ```
 
 The analysis produces a folder `examples/xquad/csv-output/` with CSV results.
@@ -53,8 +54,7 @@ Both the variance components and aggregated comparisons are run.
 This is equivalent to running
 
 ```
-reuben --config-file examples/config.yaml compare-models-aggregate examples/data.jsonl
-reuben --config-file examples/config.yaml variance-components examples/data.jsonl
+TODO: update
 ```
 
 ---
@@ -62,68 +62,7 @@ reuben --config-file examples/config.yaml variance-components examples/data.json
 
 ## Documentation
 
-### Commands
-
-#### Comparing models using aggregated scores
-
-Compute aggregated model scores, pairwise diffs, ranks
-
-```bash
-reuben compare-models-aggregate [OPTIONS] DATA_PATH
-```
-
-Outputs:
-
-- Aggregated results table
-- Pairwise diffs per aggregator
-- Effect size tables
-- Rank distributions
-
-Key options:
-
-- Resampling  
-	* `--task-resampling-method {none,nonparametric,parametric}`
-	* `--task-resampling-num-tasks N`
-	* `--task-resampling-with-replacement`
-	* `--replication-resampling-method {none,nonparametric,parametric}`
-	* `--num-bootstrap-resamples B`
-
-- Data columns  
-	* `--score-col NAME`
-	* `--model-col NAME`
-	* `--task-col NAME`
-	* `--seed-sd-col NAME` or `--seed-idx-col NAME`
-	* `--boot-sd-col NAME` or `--boot-idx-col NAME`
-	* `--replication-sd-col NAME` or `--replication-idx-col NAME`
-
-- Output options
-	* `--output-format {rich,json,csv}`
-	* `--output-path PATH`
-	* `--rounding N`
-	* `--standardized`
-	* `--fix-outliers`
-
-
----
-
-#### Variance components analysis
-
-Summarize per-model variance components:
-
-* Between-task SD ($\nu$)
-* Within-task SD ($\eta$)
-* Seed SD ($\sigma$)
-* Bootstrap SD ($\tau$)
-* Ratio of bootstrap SD to seed SD ($\tau / \sigma$)
-
-Run with:
-
-```bash
-reuben variance-components [OPTIONS] DATA_PATH
-```
-
-* Options and outputs are largely the same as above.
-* Outputs a table of variance components per model.
+TODO: update
 
 ### Configuration
 
@@ -136,7 +75,7 @@ If a flag is not provided, `reuben` will look for it in a config file (if provid
 #### Configuration file
 Config files can be passed with `--config-file PATH`.
 
-The provided [example config file](examples/xquad/config-csv-output.yaml) looks like this:
+The provided [example config file](examples/experiments-for-paper/xquad/sd-cols/config-seed-boot.yaml) looks like this:
 
 ```yaml
 # General
@@ -168,4 +107,3 @@ task_resampling_num_tasks: 61
 ## Task resampling
 replication_resampling_method: "parametric"
 ```
-
