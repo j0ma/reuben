@@ -1,0 +1,30 @@
+# Output
+output_format: rich
+rounding: 2
+
+# Identifiers
+score_col: "score"
+model_col: "model_name"
+task_col: "language"
+
+# SDs
+seed_idx_col: seed_idx
+boot_idx_col: boot_idx
+
+# Resampling
+
+## General
+num_bootstrap_resamples: 10000
+
+## Task resampling
+task_resampling_method: "nonparametric"
+task_resampling_with_replacement: true
+task_resampling_num_tasks: 10
+
+## Task resampling
+replication_resampling_method: "nonparametric"
+
+# Misc
+
+## Should we truncate outliers?
+fix_outliers: true 
